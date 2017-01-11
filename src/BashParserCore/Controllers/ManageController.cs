@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using BashParserCore.Models;
 using BashParserCore.Models.ManageViewModels;
 using BashParserCore.Services;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace BashParserCore.Controllers
 {
@@ -50,6 +51,8 @@ namespace BashParserCore.Controllers
                 : "";
 
             var user = await GetCurrentUserAsync();
+            ApplicationUser myUser = new ApplicationUser();
+
             if (user == null)
             {
                 return View("Error");
