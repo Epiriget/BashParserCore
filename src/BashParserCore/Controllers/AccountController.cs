@@ -24,6 +24,7 @@ namespace BashParserCore.Controllers
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
         private readonly RoleManager<IdentityRole> _roleManager;
+   //     private readonly IIdentityService _identityService;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -31,7 +32,9 @@ namespace BashParserCore.Controllers
             IEmailSender emailSender,
             ISmsSender smsSender,
             ILoggerFactory loggerFactory,
-            RoleManager<IdentityRole> myRoleManager)
+            RoleManager<IdentityRole> myRoleManager
+         //   IIdentityService identityService
+         )
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -39,7 +42,7 @@ namespace BashParserCore.Controllers
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
             _roleManager = myRoleManager;
-
+//           _identityService = identityService;
         }
 
         //
@@ -114,47 +117,8 @@ namespace BashParserCore.Controllers
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
-                {
-                    if (!_roleManager.RoleExistsAsync("User").Result)
-                    {
-                        IdentityRole myIdentityRole = new IdentityRole(); //Here initializes the new role
-                        myIdentityRole.Name = "User";
-                        _roleManager.CreateAsync(myIdentityRole).Wait();   //Creating new role
-                    }
-
-
-                    if (!_roleManager.RoleExistsAsync("Admin").Result)
-                    {
-                        var admin = new ApplicationUser { UserName = "admin@gmail.com", Email = "admin@gmail.com" };
-                        var result1 = await _userManager.CreateAsync(admin, "Admin1_password");
-
-                        IdentityRole adminIdentityRole = new IdentityRole();
-                        adminIdentityRole.Name = "Admin";
-                        _roleManager.CreateAsync(adminIdentityRole).Wait();
-
-                        List<string> roles = new List<string>() { "User", "Moderator", "Admin"};
-                        _userManager.AddToRolesAsync(admin, roles).Wait();
-                        await _signInManager.SignInAsync(admin, isPersistent: false);
-                    }
-
-
-                    if (!_roleManager.RoleExistsAsync("Moderator").Result)
-                    {
-                        var moder = new ApplicationUser { UserName = "moderator@gmail.com", Email = "moderator@gmail.com" };
-                        _userManager.CreateAsync(moder, "Moderator1-password").Wait();
-
-                        IdentityRole moderIdentityRole = new IdentityRole();
-                        moderIdentityRole.Name = "Moderator";
-                        _roleManager.CreateAsync(moderIdentityRole).Wait();
-
-                        List<string> roles = new List<string>() { "User", "Moderator"};
-                        _userManager.AddToRolesAsync(moder, roles).Wait();
-                        await _signInManager.SignInAsync(moder, isPersistent: false);
-
-                    }
-
+                { 
                     _userManager.AddToRoleAsync(user, "User").Wait();  //Nesessary! Appropriation role to a user
-
 
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                     // Send an email with this link
@@ -163,10 +127,11 @@ namespace BashParserCore.Controllers
                     //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
                     //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
                     await _signInManager.SignInAsync(user, isPersistent: false);
-            //        _logger.LogInformation(3, "User created a new account with password.");
+                   
+                    //        _logger.LogInformation(3, "User created a new account with password.");
                     return RedirectToLocal(returnUrl);
                 }
-            //    AddErrors(result);
+                //    AddErrors(result);
             }
 
             // If we got this far, something failed, redisplay form
