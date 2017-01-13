@@ -7,25 +7,29 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BashParserCore.Data;
 using BashParserCore.Models;
+using Microsoft.AspNetCore.Authorization;
+using BashParserCore.Data.Repositories;
 
 namespace BashParserCore.Controllers
 {
     public class PostsController : Controller
     {
-        private readonly BashContext _context;
+        private PostRepository postRepository;
 
         public PostsController(BashContext context)
         {
-            _context = context;    
+            postRepository = new PostRepository(context);
         }
 
         // GET: Posts
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Posts.ToListAsync());
+            return View(await postRepository.getElementList());
         }
 
         // GET: Posts/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,7 +37,7 @@ namespace BashParserCore.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Posts.SingleOrDefaultAsync(m => m.PostID == id);
+            var post = await postRepository.getElement(id.Value);
             if (post == null)
             {
                 return NotFound();
@@ -43,6 +47,7 @@ namespace BashParserCore.Controllers
         }
 
         // GET: Posts/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -52,19 +57,21 @@ namespace BashParserCore.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PostID,Date,PostName,Rating,Text")] Post post)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(post);
-                await _context.SaveChangesAsync();
+                postRepository.createElement(post);
+                await postRepository.save();
                 return RedirectToAction("Index");
             }
             return View(post);
         }
 
         // GET: Posts/Edit/5
+        [Authorize(Roles = "Moderator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -72,7 +79,7 @@ namespace BashParserCore.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Posts.SingleOrDefaultAsync(m => m.PostID == id);
+            var post = await postRepository.getElement(id.Value);
             if (post == null)
             {
                 return NotFound();
@@ -83,6 +90,7 @@ namespace BashParserCore.Controllers
         // POST: Posts/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("PostID,Date,PostName,Rating,Text")] Post post)
@@ -96,12 +104,12 @@ namespace BashParserCore.Controllers
             {
                 try
                 {
-                    _context.Update(post);
-                    await _context.SaveChangesAsync();
+                    postRepository.updateElement(post);
+                    await postRepository.save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PostExists(post.PostID))
+                    if (!postRepository.elementExists(id))
                     {
                         return NotFound();
                     }
@@ -116,6 +124,7 @@ namespace BashParserCore.Controllers
         }
 
         // GET: Posts/Delete/5
+        [Authorize(Roles = "Moderator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -123,7 +132,7 @@ namespace BashParserCore.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Posts.SingleOrDefaultAsync(m => m.PostID == id);
+            var post = await postRepository.getElement(id.Value);
             if (post == null)
             {
                 return NotFound();
@@ -134,18 +143,13 @@ namespace BashParserCore.Controllers
 
         // POST: Posts/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Moderator")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var post = await _context.Posts.SingleOrDefaultAsync(m => m.PostID == id);
-            _context.Posts.Remove(post);
-            await _context.SaveChangesAsync();
+            postRepository.deleteElement(id);
+            await postRepository.save();
             return RedirectToAction("Index");
-        }
-
-        private bool PostExists(int id)
-        {
-            return _context.Posts.Any(e => e.PostID == id);
         }
     }
 }
