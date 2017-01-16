@@ -1,0 +1,14 @@
+@model Comment
+
+<ul>
+    @foreach (Comment item in Model.embeddedComments)
+    {
+        <li>
+            @item.Text
+            @if (item.embeddedComments != null)
+            {
+                Html.RenderPartial("Index", Model);
+            }
+        </li>
+    }
+</ul>

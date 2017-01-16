@@ -124,5 +124,6 @@ namespace BashParserCore
             }
 
         }
+
     }
 }
