@@ -1,14 +1,18 @@
-@model Comment
+@model IEnumerable<Comment>
 
 <ul>
-    @foreach (Comment item in Model.embeddedComments)
+    @if (Model != null)
     {
-        <li>
-            @item.Text
-            @if (item.embeddedComments != null)
-            {
-                Html.RenderPartial("Index", Model);
-            }
-        </li>
+        @foreach (Comment item in Model)
+        {
+            <li>
+                @item.Text
+                <a href="~/Comments/Create/@item.Id"> Answer </a>
+                @if (Model.Where(t => t.ParentID == item.Id) != null)
+                {
+                    Html.RenderPartial("~/Views/Comments/List.cshtml", Model.Where(t => t.ParentID == item.Id));aadasdw
+                }
+            </li>
+        }
     }
 </ul>

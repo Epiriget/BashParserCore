@@ -13,7 +13,9 @@ namespace BashParserCore.Data.Repositories
         public PostRepository(BashContext context)
         {
             _context = context;
+            _context.Posts.Include(t => t.Comments).FirstOrDefault();
         }
+
         public async Task<IEnumerable<Post>> getElementList()
         {
             return await _context.Posts.ToListAsync();
@@ -21,7 +23,7 @@ namespace BashParserCore.Data.Repositories
 
         public async Task<Post> getElement(int id)
         {
-            var post = await _context.Posts.SingleOrDefaultAsync(m => m.PostID == id);
+            var post = await _context.Posts.SingleOrDefaultAsync(m => m.Id == id);
             return post;
         }
 
@@ -48,7 +50,7 @@ namespace BashParserCore.Data.Repositories
 
         public bool elementExists(int id)
         {
-            return _context.Posts.Any(e => e.PostID == id);
+            return _context.Posts.Any(e => e.Id == id);
         }
     }
 }

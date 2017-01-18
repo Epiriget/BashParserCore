@@ -1,37 +1,23 @@
-@model BashParserCore.Models.Post
+@model BashParserCore.Models.Comment
 
-@{
-    ViewData["Title"] = "Create";
-}
-
-<h2>Create</h2>
-
-<form asp-action="Create" method="post">
+<form asp-action="Create">
     <div class="form-horizontal">
-        <h4>Post</h4>
+        <h4>Comment</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
-            <label asp-for="Date" class="col-md-2 control-label"></label>
+            <label asp-for="ParentID" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Date" class="form-control" />
-                <span asp-validation-for="Date" class="text-danger" />
+                <input asp-for="ParentID" value ="@ViewBag.commentId" readonly class="form-control" />
+                <span asp-validation-for="ParentID" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="PostName" class="col-md-2 control-label"></label>
+            <label asp-for="PostId" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="PostName" class="form-control" />
-                <span asp-validation-for="PostName" class="text-danger" />
+                <input asp-for="PostId" value ="@ViewBag.postId" readonly class="form-control" />
             </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Rating" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Rating" class="form-control" />
-                <span asp-validation-for="Rating" class="text-danger" />
-            </div>
-        </div>
+        </div>%
         <div class="form-group">
             <label asp-for="Text" class="col-md-2 control-label"></label>
             <div class="col-md-10">

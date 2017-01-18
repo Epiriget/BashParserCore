@@ -59,15 +59,15 @@ namespace BashParserCore.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PostID,Date,PostName,Rating,Text")] Post post)
+        public async Task<IActionResult> Create([Bind("Id,Date,PostName,Rating,Text")] Post post)
         {
             if (ModelState.IsValid)
             {
                 postRepository.createElement(post);
                 await postRepository.save();
-                return RedirectToAction("Index");
             }
-            return View(post);
+            return RedirectToAction("Index");
+            //  return View(post);
         }
 
         // GET: Posts/Edit/5
@@ -93,9 +93,9 @@ namespace BashParserCore.Controllers
         [Authorize(Roles = "Moderator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PostID,Date,PostName,Rating,Text")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Date,PostName,Rating,Text")] Post post)
         {
-            if (id != post.PostID)
+            if (id != post.Id)
             {
                 return NotFound();
             }

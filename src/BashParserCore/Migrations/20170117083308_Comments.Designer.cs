@@ -8,9 +8,10 @@ using BashParserCore.Data;
 namespace BashParserCore.Migrations
 {
     [DbContext(typeof(BashContext))]
-    partial class BashContextModelSnapshot : ModelSnapshot
+    [Migration("20170117083308_Comments")]
+    partial class Comments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.0-rtm-22752")
