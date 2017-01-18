@@ -16,28 +16,17 @@ namespace BashParserCore.ViewConponents
             _context = context;
         }
 
-        public async Task<IViewComponentResult> List(int postId)
+        public async Task<IViewComponentResult> InvokeAsync(int postId)
         {
-            return View(_context.Comments.Where(p => p.PostId == postId));
+            ViewBag.postId = postId;
+            return View("~/Views/Shared/Components/CommentList.cshtml", _context.Comments.Where(p => p.PostId == postId));
         }
 
 
-        [HttpGet]
-        public async Task<IViewComponentResult> Create(int postId, int parentId)
-        {
-            return View(new Comment { PostId = postId, ParentID = parentId });
-        }
+       
 
 
-        [HttpPost]
-        public async Task Create([Bind("Text, ParentID, PostId")]Comment comment)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Comments.Add(comment);
-                await _context.SaveChangesAsync();
-            }
-        }
+       
 
     }
 }

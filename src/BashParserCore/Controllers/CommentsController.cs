@@ -25,18 +25,19 @@ namespace BashParserCore.Controllers
             return View(_context.Comments.Where(m => m.PostId == PostId));
         }
 
-        public IActionResult Create(int Id) //For parent's comment Id
+        /*       public IActionResult Create(int Id) //For parent's comment Id
+               {
+                   ViewBag.commentId = Id;
+                   ViewBag.postId = _context.Comments.Find(Id).PostId;
+                   return View("~/Views/Comments/Create.cshtml");
+               }
+               */
+        //[HttpPost]
+        //[Authorize]
+        //[ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create([Bind("ParentID,PostId,Text")] Comment comment)
         {
-            ViewBag.commentId = Id;
-            ViewBag.postId = _context.Comments.Find(Id).PostId;
-            return View("~/Views/Comments/Create.cshtml");
-        }
-
-        [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind("Text, ParentID, PostId")]Comment comment)
-        {
+      //      Comment comment = new Comment() { ParentID = ParentID, PostId = PostId, Text = Text };
             if (ModelState.IsValid)
             {
                 _context.Comments.Add(comment);
