@@ -40,7 +40,6 @@
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
-@*Html.Partial("~/Views/Comments/List.cshtml", Model.Comments);
-    @Html.Partial("~/Views/Comments/Create.cshtml", new Comment { PostId = Model.Id, ParentID = 0});*@
-@await Component.InvokeAsync("CommentList", new { postId = Model.Id })
+
+@await Component.InvokeAsync("InitialCommentList", new { postId = Model.Id })
 

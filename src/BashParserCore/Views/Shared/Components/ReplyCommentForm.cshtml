@@ -1,6 +1,6 @@
 @model BashParserCore.Models.Comment
 
-<form asp-action="Create">
+<form action="~/Comments/Create" method="post">
     <div class="form-horizontal">
         <h4>Comment</h4>
         <hr />
@@ -8,16 +8,16 @@
         <div class="form-group">
             <label asp-for="ParentID" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="ParentID" value ="@ViewBag.commentId" readonly class="form-control" />
+                <input asp-for="ParentID" readonly value ="@Model.ParentID" class="form-control" />
                 <span asp-validation-for="ParentID" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
             <label asp-for="PostId" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="PostId" value ="@ViewBag.postId" readonly class="form-control" />
+                <input asp-for="PostId" readonly value ="@Model.PostId" class="form-control" />
             </div>
-        </div>%
+        </div>
         <div class="form-group">
             <label asp-for="Text" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -33,9 +33,6 @@
     </div>
 </form>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

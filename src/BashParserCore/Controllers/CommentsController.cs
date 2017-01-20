@@ -25,29 +25,12 @@ namespace BashParserCore.Controllers
             return View(_context.Comments.Where(m => m.PostId == PostId));
         }
 
-        /*       public IActionResult Create(int Id) //For parent's comment Id
-               {
-                   ViewBag.commentId = Id;
-                   ViewBag.postId = _context.Comments.Find(Id).PostId;
-                   return View("~/Views/Comments/Create.cshtml");
-               }
-               */
-        //[HttpPost]
-        //[Authorize]
-        //[ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind("ParentID,PostId,Text")] Comment comment)
         {
-      //      Comment comment = new Comment() { ParentID = ParentID, PostId = PostId, Text = Text };
             if (ModelState.IsValid)
             {
                 _context.Comments.Add(comment);
                 await _context.SaveChangesAsync();
-                /*       var foundedComment = _context.Comments
-                           .Where(t => t.ParentID == comment.ParentID)
-                           .Where(t => t.Text == comment.Text);
-                       _context.Comments.Find(comment.ParentID).embeddedComments
-                           .Append(foundedComment.First());
-                       await _context.SaveChangesAsync();*/
             }
             return RedirectPermanent($"/Posts/Details/{comment.PostId}");
         }

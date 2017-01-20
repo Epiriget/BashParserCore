@@ -6,12 +6,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BashParserCore.ViewConponents
+namespace BashParserCore.ViewComponents
 {
-    public class CommentList : ViewComponent
+    public class InitialCommentList : ViewComponent
     {
         private BashContext _context;
-        public CommentList(BashContext context)
+        public InitialCommentList(BashContext context)
         {
             _context = context;
         }
@@ -19,7 +19,7 @@ namespace BashParserCore.ViewConponents
         public async Task<IViewComponentResult> InvokeAsync(int postId)
         {
             ViewBag.postId = postId;
-            return View("~/Views/Shared/Components/CommentList.cshtml", _context.Comments.Where(p => p.PostId == postId));
+            return View("~/Views/Shared/Components/InitialCommentList.cshtml", _context.Comments.Where(p=>p.PostId == postId));
         }
 
 

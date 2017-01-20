@@ -13,7 +13,7 @@ namespace BashParserCore.Models
 
         public int? ParentID { get; set; }
         public IEnumerable<Comment> embeddedComments { get; set; }
-        
+
         public int? PostId { get; set; }
         public Post Post { get; set; }
 

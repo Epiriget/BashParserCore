@@ -1,0 +1,33 @@
+@model IEnumerable<Comment>
+
+<link rel="stylesheet" href="~/css/CommentBlock.css" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script src="~/js/CommentBlock.js" asp-append-version="true"></script>
+
+
+
+@if (Model.Where(p => p.ParentID == ViewBag.parentId).Any())
+{
+    <div class="comment-block">
+        @foreach (var item in Model.Where(p => p.ParentID == ViewBag.parentId))
+        {
+            <div class="comment">
+                @Html.DisplayNameFor(modelItem => item.Id)<span> : </span>
+                @Html.DisplayFor(modelItem => item.Id)
+                @Html.DisplayNameFor(modelItem => item.ParentID)<span> : </span>
+                @Html.DisplayFor(modelItem => item.ParentID)
+                @Html.DisplayNameFor(modelItem => item.Text)<span> : </span>
+                @Html.DisplayFor(modelItem => item.Text)
+                <a id="@item.Id" class="toAnswer-click" href="javascript:">Answer</a>
+                <br>
+                <div id="comment_@item.Id" class="reply-form">@Component.InvokeAsync("ReplyCommentForm", new { postId = ViewBag.PostId, parentId = item.Id }).Result</div>
+            </div>
+           
+
+            @if (Model.Where(p => p.ParentID == item.Id).Any())
+            {
+                @Component.InvokeAsync("RecursionComment", new { comments = Model.Where(p => p.Id != item.Id), parentId = item.Id }).Result;
+            }
+        }
+    </div>
+}
