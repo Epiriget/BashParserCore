@@ -11,10 +11,10 @@ namespace BashParserCore.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+      /*  public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-        }
+        }*/
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -23,6 +23,13 @@ namespace BashParserCore.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=aspnet-BashParserCore-e9d3955e-f22b-44ff-8635-e4effd1641be;Trusted_Connection=True;MultipleActiveResultSets=true");
+        }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<Comment> Comments { get; set; }
     }
 }

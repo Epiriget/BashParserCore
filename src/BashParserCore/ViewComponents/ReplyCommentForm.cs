@@ -10,8 +10,8 @@ namespace BashParserCore.ViewComponents
 {
     public class ReplyCommentForm : ViewComponent
     {
-        private BashContext _context;
-        public ReplyCommentForm(BashContext context)
+        private ApplicationDbContext _context;
+        public ReplyCommentForm(ApplicationDbContext context)
         {
             _context = context;
         }

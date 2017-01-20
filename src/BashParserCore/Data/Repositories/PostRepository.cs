@@ -9,8 +9,8 @@ namespace BashParserCore.Data.Repositories
 {
     public class PostRepository : IReposotory<Post>
     {
-        private BashContext _context;
-        public PostRepository(BashContext context)
+        private ApplicationDbContext _context;
+        public PostRepository(ApplicationDbContext context)
         {
             _context = context;
             _context.Posts.Include(t => t.Comments).FirstOrDefault();

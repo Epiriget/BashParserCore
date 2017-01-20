@@ -9,7 +9,6 @@ namespace task_2
 {
     class Program
     {
-
         static void Main(string[] args)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -33,7 +32,7 @@ namespace task_2
 
             MatchCollection matches = posts.Matches(data);
 
-            using (BashContext db = new BashContext())
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
                 foreach (Match match in matches)
                 {

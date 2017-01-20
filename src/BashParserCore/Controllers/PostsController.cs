@@ -16,7 +16,7 @@ namespace BashParserCore.Controllers
     {
         private PostRepository postRepository;
 
-        public PostsController(BashContext context)
+        public PostsController(ApplicationDbContext context)
         {
             postRepository = new PostRepository(context);
         }
