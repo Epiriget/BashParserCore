@@ -10,8 +10,8 @@ namespace BashParserCore.ViewComponents
 {
     public class InitialCommentList : ViewComponent
     {
-        private BashContext _context;
-        public InitialCommentList(BashContext context)
+        private ApplicationDbContext _context;
+        public InitialCommentList(ApplicationDbContext context)
         {
             _context = context;
         }

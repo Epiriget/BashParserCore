@@ -12,9 +12,9 @@ namespace BashParserCore.Controllers
 {
     public class CommentsController : Controller
     {
-        private BashContext _context;
+        private ApplicationDbContext _context;
 
-        public CommentsController(BashContext context)
+        public CommentsController(ApplicationDbContext context)
         {
             _context = context;
             _context.Posts.Include(t => t.Comments).FirstOrDefault();

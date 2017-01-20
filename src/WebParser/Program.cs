@@ -33,7 +33,7 @@ namespace task_2
 
             MatchCollection matches = posts.Matches(data);
 
-            using (BashContext db = new BashContext())
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
                 foreach (Match match in matches)
                 {

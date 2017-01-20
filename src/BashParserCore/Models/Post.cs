@@ -14,5 +14,7 @@ namespace BashParserCore.Models
         public string Text { get; set; }
 
         public List<Comment> Comments { get; set; }
+
+        public ApplicationUser Author { get; set; }
     }
 }
