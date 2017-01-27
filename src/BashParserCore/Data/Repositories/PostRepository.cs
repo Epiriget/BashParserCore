@@ -13,7 +13,6 @@ namespace BashParserCore.Data.Repositories
         public PostRepository(ApplicationDbContext context)
         {
             _context = context;
-            _context.Posts.Include(t => t.Comments).FirstOrDefault();
         }
 
         public async Task<IEnumerable<Post>> getElementList()
@@ -23,7 +22,8 @@ namespace BashParserCore.Data.Repositories
 
         public async Task<Post> getElement(int id)
         {
-            var post = await _context.Posts.SingleOrDefaultAsync(m => m.Id == id);
+            var post = _context.Posts.Where(p => p.Id == id).Include(p => p.Comments).ThenInclude(p => p.Author)
+                .ThenInclude(p=>p.Userpic).Include(p => p.Author).ThenInclude(p=>p.Userpic).Single();
             return post;
         }
 
@@ -31,11 +31,11 @@ namespace BashParserCore.Data.Repositories
         {
             _context.Add(post);
         }
-        
+
         public async Task save()
         {
             await _context.SaveChangesAsync();
-        } 
+        }
 
         public void deleteElement(int id)
         {
@@ -52,5 +52,7 @@ namespace BashParserCore.Data.Repositories
         {
             return _context.Posts.Any(e => e.Id == id);
         }
+
+
     }
 }

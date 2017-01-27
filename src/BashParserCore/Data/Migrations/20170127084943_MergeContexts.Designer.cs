@@ -8,7 +8,7 @@ using BashParserCore.Data;
 namespace BashParserCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170120101817_MergeContexts")]
+    [Migration("20170127084943_MergeContexts")]
     partial class MergeContexts
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,8 +55,6 @@ namespace BashParserCore.Data.Migrations
                     b.Property<string>("UserName")
                         .HasAnnotation("MaxLength", 256);
 
-                    b.Property<int?>("UserpicId");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -65,8 +63,6 @@ namespace BashParserCore.Data.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasName("UserNameIndex");
-
-                    b.HasIndex("UserpicId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -120,13 +116,20 @@ namespace BashParserCore.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("ApplicationUserId");
+
                     b.Property<string>("Name");
 
                     b.Property<string>("Path");
 
+                    b.Property<byte[]>("Picture");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Userpic");
+                    b.HasIndex("ApplicationUserId")
+                        .IsUnique();
+
+                    b.ToTable("Userpics");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
@@ -235,13 +238,6 @@ namespace BashParserCore.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("BashParserCore.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("BashParserCore.Models.Userpic", "Userpic")
-                        .WithMany()
-                        .HasForeignKey("UserpicId");
-                });
-
             modelBuilder.Entity("BashParserCore.Models.Comment", b =>
                 {
                     b.HasOne("BashParserCore.Models.ApplicationUser", "Author")
@@ -258,6 +254,13 @@ namespace BashParserCore.Data.Migrations
                     b.HasOne("BashParserCore.Models.ApplicationUser", "Author")
                         .WithMany()
                         .HasForeignKey("AuthorId");
+                });
+
+            modelBuilder.Entity("BashParserCore.Models.Userpic", b =>
+                {
+                    b.HasOne("BashParserCore.Models.ApplicationUser", "ApplicationUser")
+                        .WithOne("Userpic")
+                        .HasForeignKey("BashParserCore.Models.Userpic", "ApplicationUserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>

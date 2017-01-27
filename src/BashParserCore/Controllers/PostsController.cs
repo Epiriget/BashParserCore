@@ -9,16 +9,25 @@ using BashParserCore.Data;
 using BashParserCore.Models;
 using Microsoft.AspNetCore.Authorization;
 using BashParserCore.Data.Repositories;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using BashParserCore.Services;
 
 namespace BashParserCore.Controllers
 {
     public class PostsController : Controller
     {
         private PostRepository postRepository;
-
-        public PostsController(ApplicationDbContext context)
+        private IHttpContextAccessor httpContextAccessor;
+        private UserManager<ApplicationUser> userManager;
+        private CurrentUserService currUserService;
+        public PostsController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager, CurrentUserService currUserService)
         {
             postRepository = new PostRepository(context);
+            this.httpContextAccessor = httpContextAccessor;
+            this.userManager = userManager;
+            this.currUserService = currUserService;
         }
 
         // GET: Posts
@@ -61,13 +70,14 @@ namespace BashParserCore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Date,PostName,Rating,Text")] Post post)
         {
+            post.Author = currUserService.getCurrentUser();/*userManager.FindByIdAsync(httpContextAccessor.HttpContext
+            .User.FindFirst(ClaimTypes.NameIdentifier).Value).Result;*/
             if (ModelState.IsValid)
             {
                 postRepository.createElement(post);
                 await postRepository.save();
             }
             return RedirectToAction("Index");
-            //  return View(post);
         }
 
         // GET: Posts/Edit/5
@@ -151,5 +161,12 @@ namespace BashParserCore.Controllers
             await postRepository.save();
             return RedirectToAction("Index");
         }
+        public async Task<IActionResult> GetUserpic(int Id)
+        {
+            Post post = await postRepository.getElement(Id);
+            return File(post.Author.Userpic.Picture, "image/jpg");
+        }
+
+
     }
 }

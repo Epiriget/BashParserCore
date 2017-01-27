@@ -8,6 +8,7 @@
 
 <div>
     <h4>Post</h4>
+    <img src="@Url.Action("GetUserpic","Image", new {Id = Model.Author.Id})" style="width:120px; height:auto">
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -33,6 +34,12 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Text)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Author)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Author.UserName)
         </dd>
     </dl>
 </div>

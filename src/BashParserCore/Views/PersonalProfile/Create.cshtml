@@ -1,0 +1,15 @@
+@model ApplicationUser
+
+@{
+    ViewData["Title"] = "Addition of userpic";
+}
+
+<form asp-action="Create" asp-controller="PersonalProfile" method="post" enctype="multipart/form-data">
+    <p>
+        <label>UserPic</label>
+        <input name="pic" type="file" class="form-control" />
+    </p>
+    <p>
+        <input type="submit" value="Add as a userpic" />
+    </p>
+</form>

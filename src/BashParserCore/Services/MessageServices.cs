@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MailKit.Net.Smtp;
+using MimeKit;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,10 +12,26 @@ namespace BashParserCore.Services
     // For more details see this link http://go.microsoft.com/fwlink/?LinkID=532713
     public class AuthMessageSender : IEmailSender, ISmsSender
     {
-        public Task SendEmailAsync(string email, string subject, string message)
+        public async Task SendEmailAsync(string email, string subject, string message)
         {
-            // Plug in your email service here to send an email.
-            return Task.FromResult(0);
+            var emailMessage = new MimeMessage();
+
+            emailMessage.From.Add(new MailboxAddress("Администрация сайта", "varnakin2012@yandex.ru"));
+            emailMessage.To.Add(new MailboxAddress("", email));
+            emailMessage.Subject = subject;
+            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            {
+                Text = message
+            };
+
+            using (var client = new SmtpClient())
+            {
+                await client.ConnectAsync("smtp.yandex.ru", 25, false);
+                await client.AuthenticateAsync("varnakin2012@yandex.ru", "21031970_vfvf");
+                await client.SendAsync(emailMessage);
+
+                await client.DisconnectAsync(true);
+            }
         }
 
         public Task SendSmsAsync(string number, string message)

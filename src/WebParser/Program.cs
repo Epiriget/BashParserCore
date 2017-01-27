@@ -4,6 +4,7 @@ using System.Net.Http;
 using BashParserCore.Models;
 using BashParserCore.Data;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 
 namespace task_2
 {
@@ -41,7 +42,8 @@ namespace task_2
                         PostName = title.Match(match.ToString()).Groups["title"].Value,
                         Date = date.Match(match.ToString()).Groups["date"].Value,
                         Rating = rating.Match(match.ToString()).Groups["rating"].Value,
-                        Text = (body.Match(match.ToString()).Groups["text"].Value).Replace(@"<br>", "\n")
+                        Text = (body.Match(match.ToString()).Groups["text"].Value).Replace(@"<br>", "\n"),
+                        Author = db.Users.Find("6bc287b7-cc63-4ef3-b651-483d009ae27f")
                     };
                     db.Add(post);
                     db.SaveChanges();

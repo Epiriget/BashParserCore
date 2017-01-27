@@ -13,11 +13,6 @@ namespace BashParserCore.Data.Migrations
                 name: "IX_AspNetUserRoles_UserId",
                 table: "AspNetUserRoles");
 
-            migrationBuilder.AddColumn<int>(
-                name: "UserpicId",
-                table: "AspNetUsers",
-                nullable: true);
-
             migrationBuilder.CreateTable(
                 name: "Posts",
                 columns: table => new
@@ -42,17 +37,25 @@ namespace BashParserCore.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Userpic",
+                name: "Userpics",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ApplicationUserId = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
-                    Path = table.Column<string>(nullable: true)
+                    Path = table.Column<string>(nullable: true),
+                    Picture = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Userpic", x => x.Id);
+                    table.PrimaryKey("PK_Userpics", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Userpics_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -84,11 +87,6 @@ namespace BashParserCore.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_UserpicId",
-                table: "AspNetUsers",
-                column: "UserpicId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Comments_AuthorId",
                 table: "Comments",
                 column: "AuthorId");
@@ -103,37 +101,23 @@ namespace BashParserCore.Data.Migrations
                 table: "Posts",
                 column: "AuthorId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUsers_Userpic_UserpicId",
-                table: "AspNetUsers",
-                column: "UserpicId",
-                principalTable: "Userpic",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+            migrationBuilder.CreateIndex(
+                name: "IX_Userpics_ApplicationUserId",
+                table: "Userpics",
+                column: "ApplicationUserId",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUsers_Userpic_UserpicId",
-                table: "AspNetUsers");
-
             migrationBuilder.DropTable(
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "Userpic");
+                name: "Userpics");
 
             migrationBuilder.DropTable(
                 name: "Posts");
-
-            migrationBuilder.DropIndex(
-                name: "IX_AspNetUsers_UserpicId",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-                name: "UserpicId",
-                table: "AspNetUsers");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserRoles_UserId",

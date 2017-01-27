@@ -13,6 +13,7 @@ using BashParserCore.Data;
 using BashParserCore.Models;
 using BashParserCore.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 
 namespace BashParserCore
 {
@@ -49,6 +50,7 @@ namespace BashParserCore
                 opt.Password.RequireDigit = false;
                 opt.Password.RequiredLength = 8;
                 opt.Password.RequireUppercase = false;
+                opt.Password.RequireNonAlphanumeric = false;
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
@@ -58,6 +60,8 @@ namespace BashParserCore
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<CurrentUserService>();
 
             //  services.AddTransient<IIdentityService, IdentityService>();
 
@@ -106,27 +110,39 @@ namespace BashParserCore
                 await roleManager.CreateAsync(new IdentityRole("User"));
             }
 
+            var moder = new ApplicationUser { UserName = "moderator@gmail.com", Email = "moderator@gmail.com" };
             if (!roleManager.RoleExistsAsync("Moderator").Result)
             {
                 await roleManager.CreateAsync(new IdentityRole("Moderator"));
-                var moder = new ApplicationUser { UserName = "moderator@gmail.com", Email = "moderator@gmail.com" };
-                userManager.CreateAsync(moder, "Moderator1-password").Wait();
-
-                List<string> moderRoles = new List<string>() { "User", "Moderator" };
-                userManager.AddToRolesAsync(moder, moderRoles).Wait();
-
             }
+            if (!userManager.Users.Where(p => p.UserName == moder.UserName).Any())
+            {
+                userManager.CreateAsync(moder, "Moderator1-password").Wait();
+                userManager.AddToRolesAsync(moder, new List<string>() { "User", "Moderator" }).Wait();
+            }
+
+            var admin = new ApplicationUser { UserName = "admin@gmail.com", Email = "admin@gmail.com" };
             if (!roleManager.RoleExistsAsync("Admin").Result)
             {
                 await roleManager.CreateAsync(new IdentityRole("Admin"));
-                var admin = new ApplicationUser { UserName = "admin@gmail.com", Email = "admin@gmail.com" };
+            }
+            if (!userManager.Users.Where(p => p.UserName == admin.UserName).Any())
+            {
                 userManager.CreateAsync(admin, "Admin1_password").Wait();
+                userManager.AddToRolesAsync(admin, new List<string>() { "User", "Moderator", "Admin" }).Wait();
+            }
 
-                List<string> adminRoles = new List<string>() { "User", "Moderator", "Admin" };
-                userManager.AddToRolesAsync(admin, adminRoles).Wait();
+            var mainAdmin = new ApplicationUser { UserName = "mainadmin@gmail.com", Email = "mainadmin@gmail.com" };
+            if (!roleManager.RoleExistsAsync("MainAdmin").Result)
+            {
+                await roleManager.CreateAsync(new IdentityRole("MainAdmin"));
+            }
+            if (!userManager.Users.Where(p => p.UserName == mainAdmin.UserName).Any())
+            {
+                userManager.CreateAsync(mainAdmin, "mainadmin_password").Wait();
+                userManager.AddToRolesAsync(mainAdmin, new List<string>() { "User", "Moderator", "Admin" }).Wait();
             }
 
         }
-
     }
 }

@@ -2,6 +2,7 @@
   "userSecretsId": "aspnet-BashParserCore-e9d3955e-f22b-44ff-8635-e4effd1641be",
 
   "dependencies": {
+    "MailKit": "1.8.1",
     "Microsoft.NETCore.App": {
       "version": "1.0.1",
       "type": "platform"

@@ -12,10 +12,8 @@
         @foreach (var item in Model.Where(p => p.ParentID == ViewBag.parentId))
         {
             <div class="comment">
-                @Html.DisplayNameFor(modelItem => item.Id)<span> : </span>
-                @Html.DisplayFor(modelItem => item.Id)
-                @Html.DisplayNameFor(modelItem => item.ParentID)<span> : </span>
-                @Html.DisplayFor(modelItem => item.ParentID)
+                <img src="@Url.Action("GetUserpic","Image", new {Id = Model.Author.Id})" style="width:120px; height:auto">
+                @Html.DisplayFor(modelItem => item.Author.UserName)
                 @Html.DisplayNameFor(modelItem => item.Text)<span> : </span>
                 @Html.DisplayFor(modelItem => item.Text)
                 <a id="@item.Id" class="toAnswer-click" href="javascript:">Answer</a>

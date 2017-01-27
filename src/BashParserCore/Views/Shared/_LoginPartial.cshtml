@@ -9,6 +9,9 @@
     <form asp-area="" asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
             <li>
+                <img src="@Url.Action("GetUserpic","Image", new {Id = UserManager.GetUserAsync(User).Result.Id})" style="width:auto; height:50px">
+            </li>
+            <li>
                 <a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
             </li>
             <li>
