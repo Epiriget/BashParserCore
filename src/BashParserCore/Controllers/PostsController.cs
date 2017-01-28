@@ -19,6 +19,7 @@ namespace BashParserCore.Controllers
     public class PostsController : Controller
     {
         private PostRepository postRepository;
+
         private IHttpContextAccessor httpContextAccessor;
         private UserManager<ApplicationUser> userManager;
         private CurrentUserService currUserService;

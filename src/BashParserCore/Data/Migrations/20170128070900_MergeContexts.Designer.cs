@@ -8,7 +8,7 @@ using BashParserCore.Data;
 namespace BashParserCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170127084943_MergeContexts")]
+    [Migration("20170128070900_MergeContexts")]
     partial class MergeContexts
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
