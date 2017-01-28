@@ -15,9 +15,5 @@ namespace BashParserCore.Models
         public ApplicationUser Author { get; set; }
         public int? ParentID { get; set; }
 
-
-
-
-
     }
 }

@@ -19,6 +19,7 @@ namespace BashParserCore.Controllers
         private IHttpContextAccessor httpContextAccessor;
         private UserManager<ApplicationUser> userManager;
         public CommentsController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
+
         {
             _context = context;
        //     _context.Posts.Include(t => t.Comments).FirstOrDefault();
