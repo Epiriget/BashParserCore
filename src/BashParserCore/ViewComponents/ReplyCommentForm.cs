@@ -17,7 +17,6 @@ namespace BashParserCore.ViewComponents
         }
 
         [HttpGet]
-
         public async Task<IViewComponentResult> InvokeAsync(int postId, int parentId)
         {
             return View("~/Views/Shared/Components/ReplyCommentForm.cshtml", new Comment { PostId = postId, ParentID = parentId });

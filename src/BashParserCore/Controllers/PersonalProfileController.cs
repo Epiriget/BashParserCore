@@ -16,9 +16,9 @@ namespace BashParserCore.Controllers
     public class PersonalProfileController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private CurrentUserService currUserService;
+        private ICurrentUserService currUserService;
 
-        public PersonalProfileController(ApplicationDbContext context, CurrentUserService currUserService)
+        public PersonalProfileController(ApplicationDbContext context, ICurrentUserService currUserService)
         {
             _context = context;
             this.currUserService = currUserService;

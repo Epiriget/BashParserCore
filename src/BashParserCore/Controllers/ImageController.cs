@@ -18,10 +18,17 @@ namespace BashParserCore.Controllers
             this.context = context;
         }
 
-        public async Task<IActionResult> GetUserpic(string Id)
+        public IActionResult GetUserpic(string Id)
         {
-            var author = context.ApplicationUser.Where(p => p.Id == Id).Include(p=>p.Userpic).Single();
-            return File(author.Userpic.Picture, "image/jpg");
+            var author = context.ApplicationUser.Where(p => p.Id == Id).Include(p => p.Userpic).Single();
+            if (author.Userpic != null)
+            {
+                return File(author.Userpic.Picture, "image/jpg");
+            }
+            else
+            {
+                return File("~/images/DefaultUser.jpg", "image/jpg");
+            }
         }
     }
 }

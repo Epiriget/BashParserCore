@@ -10,29 +10,24 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using BashParserCore.Services;
 
 namespace BashParserCore.Controllers
 {
     public class CommentsController : Controller
     {
         private ApplicationDbContext _context;
-        private IHttpContextAccessor httpContextAccessor;
-        private UserManager<ApplicationUser> userManager;
-        public CommentsController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
-
+        private ICurrentUserService currentUserService;
+        public CommentsController(ApplicationDbContext context, ICurrentUserService currentUserService)
         {
             _context = context;
-       //     _context.Posts.Include(t => t.Comments).FirstOrDefault();
-       //     _context.Comments.Include(t => t.Author).FirstOrDefault();
-            this.httpContextAccessor = httpContextAccessor;
-            this.userManager = userManager;
+            this.currentUserService = currentUserService;
         }
 
         [Authorize]
         public async Task<ActionResult> Create([Bind("ParentID,PostId,Text")] Comment comment)
         {
-            comment.Author = userManager.FindByIdAsync(httpContextAccessor.HttpContext
-            .User.FindFirst(ClaimTypes.NameIdentifier).Value).Result;
+            comment.Author = currentUserService.getCurrentUser();
             if (ModelState.IsValid)
             {
                 _context.Comments.Add(comment);

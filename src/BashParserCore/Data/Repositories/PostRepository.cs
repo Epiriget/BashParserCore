@@ -7,20 +7,21 @@ using System.Threading.Tasks;
 
 namespace BashParserCore.Data.Repositories
 {
-    public class PostRepository : IReposotory<Post>
+    public class PostRepository : IRepository<Post>
     {
         private ApplicationDbContext _context;
         public PostRepository(ApplicationDbContext context)
         {
             _context = context;
         }
-
+   
         public async Task<IEnumerable<Post>> getElementList()
         {
-            return await _context.Posts.ToListAsync();
+            var Posts = await _context.Posts.Include(p => p.Author).ThenInclude(p => p.Userpic).ToListAsync();
+            return Posts;
         }
 
-        public async Task<Post> getElement(int id)
+        public Post getElement(int id)
         {
             var post = _context.Posts.Where(p => p.Id == id).Include(p => p.Comments).ThenInclude(p => p.Author)
                 .ThenInclude(p=>p.Userpic).Include(p => p.Author).ThenInclude(p=>p.Userpic).Single();
@@ -39,7 +40,7 @@ namespace BashParserCore.Data.Repositories
 
         public void deleteElement(int id)
         {
-            var post = getElement(id).Result;
+            var post = getElement(id);
             _context.Posts.Remove(post);
         }
 
@@ -52,7 +53,6 @@ namespace BashParserCore.Data.Repositories
         {
             return _context.Posts.Any(e => e.Id == id);
         }
-
 
     }
 }

@@ -5,19 +5,10 @@
         <h4>Comment</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label asp-for="ParentID" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="ParentID" readonly value ="@Model.ParentID" class="form-control" />
-                <span asp-validation-for="ParentID" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="PostId" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="PostId" readonly value ="@Model.PostId" class="form-control" />
-            </div>
-        </div>
+
+        <input asp-for="ParentID" type="hidden" class="form-control" />
+        <input asp-for="PostId" type="hidden" class="form-control" />
+
         <div class="form-group">
             <label asp-for="Text" class="col-md-2 control-label"></label>
             <div class="col-md-10">

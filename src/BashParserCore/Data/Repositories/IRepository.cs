@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 
 namespace BashParserCore.Data.Repositories
 {
-    interface IReposotory<T>
+    public interface IRepository<T>
         where T : class
     {
         Task<IEnumerable<T>> getElementList();
-        Task<T> getElement(int id);
+        T getElement(int id);
         void createElement(T item);
+        void updateElement(T item);
         void deleteElement(int id);
         Task save();
         bool elementExists(int id);

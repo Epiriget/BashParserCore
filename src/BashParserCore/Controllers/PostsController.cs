@@ -18,36 +18,32 @@ namespace BashParserCore.Controllers
 {
     public class PostsController : Controller
     {
-        private PostRepository postRepository;
-
-        private IHttpContextAccessor httpContextAccessor;
-        private UserManager<ApplicationUser> userManager;
-        private CurrentUserService currUserService;
-        public PostsController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager, CurrentUserService currUserService)
+        private IRepository<Post> postRepository;
+        private ICurrentUserService currUserService;
+        public PostsController(ICurrentUserService currUserService, IRepository<Post> postRepository)
         {
-            postRepository = new PostRepository(context);
-            this.httpContextAccessor = httpContextAccessor;
-            this.userManager = userManager;
+            this.postRepository = postRepository;
             this.currUserService = currUserService;
         }
 
         // GET: Posts
         [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await postRepository.getElementList());
+            //var user = currUserService.getCurrentUser();
+            return View(postRepository.getElementList().Result);
         }
 
         // GET: Posts/Details/5
         [AllowAnonymous]
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var post = await postRepository.getElement(id.Value);
+            var post = postRepository.getElement(id.Value);
             if (post == null)
             {
                 return NotFound();
@@ -71,8 +67,7 @@ namespace BashParserCore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Date,PostName,Rating,Text")] Post post)
         {
-            post.Author = currUserService.getCurrentUser();/*userManager.FindByIdAsync(httpContextAccessor.HttpContext
-            .User.FindFirst(ClaimTypes.NameIdentifier).Value).Result;*/
+            post.Author = currUserService.getCurrentUser();
             if (ModelState.IsValid)
             {
                 postRepository.createElement(post);
@@ -83,14 +78,14 @@ namespace BashParserCore.Controllers
 
         // GET: Posts/Edit/5
         [Authorize(Roles = "Moderator")]
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var post = await postRepository.getElement(id.Value);
+            var post = postRepository.getElement(id.Value);
             if (post == null)
             {
                 return NotFound();
@@ -136,14 +131,14 @@ namespace BashParserCore.Controllers
 
         // GET: Posts/Delete/5
         [Authorize(Roles = "Moderator")]
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var post = await postRepository.getElement(id.Value);
+            var post = postRepository.getElement(id.Value);
             if (post == null)
             {
                 return NotFound();
@@ -162,12 +157,11 @@ namespace BashParserCore.Controllers
             await postRepository.save();
             return RedirectToAction("Index");
         }
-        public async Task<IActionResult> GetUserpic(int Id)
+        public IActionResult GetUserpic(int Id)
         {
-            Post post = await postRepository.getElement(Id);
+            Post post = postRepository.getElement(Id);
             return File(post.Author.Userpic.Picture, "image/jpg");
         }
-
 
     }
 }

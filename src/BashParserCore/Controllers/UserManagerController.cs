@@ -10,16 +10,17 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using BashParserCore.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace BashParserCore.Controllers
 {
     public class UserManagerController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        private CurrentUserService currUserService;
+        private ApplicationDbContext _context;
+        private ICurrentUserService currUserService;
         private UserManager<ApplicationUser> userManager;
         private IEmailSender messageSender;
-        public UserManagerController(ApplicationDbContext context, CurrentUserService currUserService, UserManager<ApplicationUser> userManager, IEmailSender messageSender)
+        public UserManagerController(ApplicationDbContext context, ICurrentUserService currUserService, UserManager<ApplicationUser> userManager, IEmailSender messageSender)
         {
             _context = context;
             this.currUserService = currUserService;
@@ -31,7 +32,8 @@ namespace BashParserCore.Controllers
         [Authorize(Roles = "Moderator")]
         public IActionResult Index()
         {
-            return View(_context.Users.ToList());
+            var Users = _context.Users.Include(p=>p.Userpic);
+            return View(Users);
         }
 
         [Authorize(Roles = "Admin")]

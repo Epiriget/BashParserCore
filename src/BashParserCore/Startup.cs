@@ -14,6 +14,7 @@ using BashParserCore.Models;
 using BashParserCore.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
+using BashParserCore.Data.Repositories;
 
 namespace BashParserCore
 {
@@ -61,10 +62,8 @@ namespace BashParserCore
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddTransient<CurrentUserService>();
-
-            //  services.AddTransient<IIdentityService, IdentityService>();
-
+            services.AddTransient<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<IRepository<Post>, PostRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -94,7 +93,7 @@ namespace BashParserCore
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Posts}/{action=Index}/{id?}");
             });
 
         }

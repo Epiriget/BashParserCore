@@ -15,21 +15,14 @@ namespace BashParserCore.ViewComponents
         public InitialCommentList(ApplicationDbContext context)
         {
             _context = context;
-            _context.Comments.Include(t => t.Author).FirstOrDefault();
         }
 
         public async Task<IViewComponentResult> InvokeAsync(int postId)
         {
             ViewBag.postId = postId;
-            var comments = _context.Comments.Where(p => p.PostId == postId);
+            var comments = await _context.Comments.Where(p => p.PostId == postId).ToListAsync();
             return View("~/Views/Shared/Components/InitialCommentList.cshtml", _context.Comments.Where(p=>p.PostId == postId));
         }
-
-
-       
-
-
-       
 
     }
 }

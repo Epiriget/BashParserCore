@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BashParserCore.Services
 {
-    public class CurrentUserService
+    public class CurrentUserService : ICurrentUserService
     {
         private IHttpContextAccessor httpContextAccessor;
         private UserManager<ApplicationUser> userManager;
@@ -18,11 +18,14 @@ namespace BashParserCore.Services
             this.httpContextAccessor = httpContextAccessor;
             this.userManager = userManager;
         }
-
+        
         public ApplicationUser getCurrentUser()
         {
-            ApplicationUser currUser = userManager.FindByIdAsync(httpContextAccessor.HttpContext
-            .User.FindFirst(ClaimTypes.NameIdentifier).Value).Result;
+            ApplicationUser currUser = null;
+            if(httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier) != null) {
+                currUser = userManager.FindByIdAsync(httpContextAccessor.HttpContext
+                .User.FindFirst(ClaimTypes.NameIdentifier).Value).Result;
+            }
             return currUser;
         }
     }

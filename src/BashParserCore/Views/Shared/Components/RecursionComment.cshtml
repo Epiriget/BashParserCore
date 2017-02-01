@@ -4,23 +4,20 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 <script src="~/js/CommentBlock.js" asp-append-version="true"></script>
 
-
-
 @if (Model.Where(p => p.ParentID == ViewBag.parentId).Any())
 {
     <div class="comment-block">
         @foreach (var item in Model.Where(p => p.ParentID == ViewBag.parentId))
         {
             <div class="comment">
-                <img src="@Url.Action("GetUserpic","Image", new {Id = Model.Author.Id})" style="width:120px; height:auto">
+                <img src="@Url.Action("GetUserpic", "Image", new { Id =item.Author.Id })" style="width:25px; height:25px">
                 @Html.DisplayFor(modelItem => item.Author.UserName)
                 @Html.DisplayNameFor(modelItem => item.Text)<span> : </span>
                 @Html.DisplayFor(modelItem => item.Text)
-                <a id="@item.Id" class="toAnswer-click" href="javascript:">Answer</a>
-                <br>
-                <div id="comment_@item.Id" class="reply-form">@Component.InvokeAsync("ReplyCommentForm", new { postId = ViewBag.PostId, parentId = item.Id }).Result</div>
+                <a id="@item.Id" class="toAnswer-click" href="javascript:0">Answer</a>
+                <div id="comment_@item.Id" style="display:none">@Component.InvokeAsync("ReplyCommentForm", new { postId = ViewBag.PostId, parentId = item.Id }).Result</div>
             </div>
-           
+
 
             @if (Model.Where(p => p.ParentID == item.Id).Any())
             {

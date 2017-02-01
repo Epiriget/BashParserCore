@@ -24,7 +24,6 @@ namespace BashParserCore.Controllers
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
         private readonly RoleManager<IdentityRole> _roleManager;
-   //     private readonly IIdentityService _identityService;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -33,7 +32,6 @@ namespace BashParserCore.Controllers
             ISmsSender smsSender,
             ILoggerFactory loggerFactory,
             RoleManager<IdentityRole> myRoleManager
-         //   IIdentityService identityService
          )
         {
             _userManager = userManager;
