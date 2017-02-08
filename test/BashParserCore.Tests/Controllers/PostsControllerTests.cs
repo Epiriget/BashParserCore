@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using BashParserCore.Services;
 using BashParserCore.Data;
 using Microsoft.AspNetCore.Mvc;
+ 
 
 namespace BashParserCore.Tests.Controllers
 {
@@ -40,7 +41,7 @@ namespace BashParserCore.Tests.Controllers
             Assert.IsInstanceOf<IEnumerable<Post>>(actionResult.Model);
         }
 
-        [TestCase(12)]
+        [TestCase(12)] 
         public void Details_ReturnsValidModel_IfIdInvalid(int? id)
         {
             mockRepo.Setup(p => p.getElement(id.Value)).Returns(getPost(id.Value));
@@ -55,7 +56,6 @@ namespace BashParserCore.Tests.Controllers
         [TestCase(null)]
         public void Details_ReturnsInvalidModel_IfIdInvalid(int? id)
         {
-
             var result = postsController.Details(id);
             var actionResult = result as ViewResult;
 
@@ -66,7 +66,6 @@ namespace BashParserCore.Tests.Controllers
         {
             IActionResult result = postsController.Create();
             var actionResult = result as ViewResult;
-
             //  Assert.That(result, Is.EqualTo("Create"));
         }
 

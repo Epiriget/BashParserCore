@@ -48,6 +48,7 @@ namespace BashParserCore
 
             services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
             {
+                opt.SignIn.RequireConfirmedEmail = true;
                 opt.Password.RequireDigit = false;
                 opt.Password.RequiredLength = 8;
                 opt.Password.RequireUppercase = false;
@@ -109,7 +110,7 @@ namespace BashParserCore
                 await roleManager.CreateAsync(new IdentityRole("User"));
             }
 
-            var moder = new ApplicationUser { UserName = "moderator@gmail.com", Email = "moderator@gmail.com" };
+            var moder = new ApplicationUser { UserName = "moderator@gmail.com", Email = "moderator@gmail.com", EmailConfirmed = true };
             if (!roleManager.RoleExistsAsync("Moderator").Result)
             {
                 await roleManager.CreateAsync(new IdentityRole("Moderator"));
@@ -120,7 +121,7 @@ namespace BashParserCore
                 userManager.AddToRolesAsync(moder, new List<string>() { "User", "Moderator" }).Wait();
             }
 
-            var admin = new ApplicationUser { UserName = "admin@gmail.com", Email = "admin@gmail.com" };
+            var admin = new ApplicationUser { UserName = "admin@gmail.com", Email = "admin@gmail.com",  EmailConfirmed = true };
             if (!roleManager.RoleExistsAsync("Admin").Result)
             {
                 await roleManager.CreateAsync(new IdentityRole("Admin"));
@@ -131,7 +132,7 @@ namespace BashParserCore
                 userManager.AddToRolesAsync(admin, new List<string>() { "User", "Moderator", "Admin" }).Wait();
             }
 
-            var mainAdmin = new ApplicationUser { UserName = "mainadmin@gmail.com", Email = "mainadmin@gmail.com" };
+            var mainAdmin = new ApplicationUser { UserName = "mainadmin@gmail.com", Email = "mainadmin@gmail.com", EmailConfirmed = true};
             if (!roleManager.RoleExistsAsync("MainAdmin").Result)
             {
                 await roleManager.CreateAsync(new IdentityRole("MainAdmin"));

@@ -9,11 +9,14 @@
     "Microsoft.EntityFrameworkCore.SqlServer": "1.1.0",
     "Microsoft.EntityFrameworkCore.SqlServer.Design": "1.1.0",
     "Microsoft.EntityFrameworkCore.Tools": "1.1.0-preview4-final",
+    "Microsoft.Extensions.Configuration": "1.1.0",
     "System.Text.Encoding.CodePages": "4.3.0",
     "Microsoft.NETCore.App": {
       "type": "platform",
       "version": "1.0.1"
-    }
+    },
+    "Hangfire.Core": "1.6.8",
+    "Hangfire.SqlServer": "1.6.8"
   },
 
   "frameworks": {

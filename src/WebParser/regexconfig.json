@@ -1,0 +1,7 @@
+﻿{
+  "DateRegex": "\\w?=.?date.{2}(?<date>.+)</span>",
+  "TitleRegex": "title:\\s'(?<title>.+)'",
+  "BodyRegex": "class=.text.{2}(?<text>.+)</div>",
+  "RatingRegex": "class=\"\"rating\"\".(?<rating>.{0,6})</span>",
+  "PostRegex": "<div class=\"\"quote\"\">\\n.+\\n.+\\n?.+\\n?</div>\\n?.+</div>"
+}
