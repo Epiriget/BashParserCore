@@ -5,32 +5,41 @@ using BashParserCore.Models;
 using BashParserCore.Data;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Hangfire;
+using Hangfire.SqlServer;
 
 namespace task_2
 {
+
+
     class Program
     {
         static void Main(string[] args)
         {
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            string url = "http://bash.im";
-            HttpClient client = new HttpClient();
-            string data = client.GetStringAsync(url).Result;
-
-            Console.Write(data);
-
+          /*  GlobalConfiguration.Configuration.UseSqlServerStorage("Server=(localdb)\\mssqllocaldb;Database=aspnet-BashParserCore-e9d3955e-f22b-44ff-8635-e4effd1641be;Trusted_Connection=True;MultipleActiveResultSets=true");
+            JobStorage.Current = new SqlServerStorage("Server=(localdb)\\mssqllocaldb;Database=aspnet-BashParserCore-e9d3955e-f22b-44ff-8635-e4effd1641be;Trusted_Connection=True;MultipleActiveResultSets=true");
+            var server = new BackgroundJobServer();
+            RecurringJob.AddOrUpdate(() => Console.Write("Easy!"), Cron.Minutely);
+            Console.ReadKey();
+            server.Dispose();*/
             string datePattern = @"\w?=.?date.{2}(?<date>.+)</span>";
             string titlePattern = @"title:\s'(?<title>.+)'";
             string bodyPattern = @"class=.text.{2}(?<text>.+)</div>";
             string ratingPattern = @"class=""rating"".(?<rating>.{0,6})</span>";
             string pattern = @"<div class=""quote"">\n.+\n.+\n?.+\n?</div>\n?.+</div>";
 
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            string url = "http://bash.im";
+            HttpClient client = new HttpClient();
+            string data = client.GetStringAsync(url).Result;
+
+            Console.Write("refd");
+
             Regex posts = new Regex(pattern);
             Regex date = new Regex(datePattern);
             Regex title = new Regex(titlePattern);
             Regex body = new Regex(bodyPattern);
             Regex rating = new Regex(ratingPattern);
-
             MatchCollection matches = posts.Matches(data);
 
             using (ApplicationDbContext db = new ApplicationDbContext())

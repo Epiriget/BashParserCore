@@ -46,7 +46,7 @@ namespace BashParserCore.Controllers
             {
                 _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
-                await messageSender.SendEmailAsync(user.Email, "Your account has been deleted", "Da");
+                await messageSender.SendEmailAsync(user.Email, "Your account has been deleted", $"Уважаемый {user.UserName}, Ваш профиль на ресурсе BashParserCore был удален, поскольку Вы - мудак.");
             }
             else
             {

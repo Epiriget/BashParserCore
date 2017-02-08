@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using BashParserCore.Services;
+using Microsoft.Extensions.Options;
 
 namespace BashParserCore.Controllers
 {
@@ -30,7 +31,6 @@ namespace BashParserCore.Controllers
         [AllowAnonymous]
         public IActionResult Index()
         {
-            //var user = currUserService.getCurrentUser();
             return View(postRepository.getElementList().Result);
         }
 
