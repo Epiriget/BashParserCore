@@ -37,5 +37,6 @@ namespace BashParserCore.Data
         public DbSet<Userpic> Userpics { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<InvitationModel> Invitees { get; set; }
     }
 }

@@ -12,6 +12,7 @@ using BashParserCore.Models;
 using BashParserCore.Models.AccountViewModels;
 using BashParserCore.Services;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using BashParserCore.Data;
 
 namespace BashParserCore.Controllers
 {
@@ -24,6 +25,8 @@ namespace BashParserCore.Controllers
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ApplicationDbContext _context;
+        private readonly ICurrentUserService _currUserService;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -31,7 +34,9 @@ namespace BashParserCore.Controllers
             IEmailSender emailSender,
             ISmsSender smsSender,
             ILoggerFactory loggerFactory,
-            RoleManager<IdentityRole> myRoleManager
+            RoleManager<IdentityRole> myRoleManager,
+            ApplicationDbContext context,
+            ICurrentUserService currUserService
          )
         {
             _userManager = userManager;
@@ -40,6 +45,8 @@ namespace BashParserCore.Controllers
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
             _roleManager = myRoleManager;
+            _context = context;
+            _currUserService = currUserService;
         }
 
         //
@@ -135,13 +142,52 @@ namespace BashParserCore.Controllers
                     // await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
                     return View("~/Views/Account/VerifyEmail.cshtml", new LoginViewModel { Email = model.Email, Password = model.Password, RememberMe = false });
-                    return RedirectToLocal(returnUrl);
+                    // return RedirectToLocal(returnUrl);
                 }
                 //    AddErrors(result);
             }
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult InviteFriend()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult InviteFriend(InvitationViewModel model)
+        {
+            var currUser = _currUserService.getCurrentUser();
+            var invitee = new InvitationModel { Email = model.Email, SendingTime = DateTime.Now, SenderId = currUser.Id };
+            _context.Invitees.Add(invitee);
+            _context.SaveChanges();
+            invitee = _context.Invitees.Where(p => p.SenderId == invitee.SenderId).Where(p => p.SendingTime == invitee.SendingTime).SingleOrDefault();
+            var callbackUrl = Url.Action("ConfirmInvitation", "Account", new { code = invitee.InvitationId }, protocol: HttpContext.Request.Scheme);
+
+            
+            _emailSender.SendEmailAsync(model.Email, "Invitation to BashParserCore", $"{currUser.UserName} invites you to BashParserCore, click this <a href='{callbackUrl}'>link</a> to join");
+            return RedirectToAction(nameof(HomeController.Index), "Home");
+        }
+
+        [HttpGet]
+        public IActionResult ConfirmInvitation(string code) //invoked after accepting invitation by invited user  
+        {
+            var guid = new Guid(code);
+
+            var invitee = _context.Invitees.Find(guid);
+            _context.Invitees.Remove(invitee);
+
+            DateTime date = DateTime.Now;
+            TimeSpan diff = invitee.SendingTime - date;
+            
+            if (invitee != null && diff.TotalHours < 24) //confirm that it has gone less then 24 hours after invitation and existence of invitee
+            {
+                return RedirectToAction(nameof(AccountController.Register), "Account");
+            }
+            return Redirect("~/Views/Account/InvalidInvitation.cshtml");
         }
 
         //
