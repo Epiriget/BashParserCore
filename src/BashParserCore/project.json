@@ -44,7 +44,9 @@
       "version": "1.0.0-preview2-final",
       "type": "build"
     },
-    "Microsoft.EntityFrameworkCore.SqlServer": "1.1.0"
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.1.0",
+    "Hangfire.AspNetCore": "1.6.8",
+    "Hangfire": "1.6.8"
   },
 
   "tools": {

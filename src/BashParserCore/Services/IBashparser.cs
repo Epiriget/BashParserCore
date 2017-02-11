@@ -1,25 +1,24 @@
-﻿using System;
-using System.Text.RegularExpressions;
-using System.Net.Http;
+﻿using BashParserCore.Data;
 using BashParserCore.Models;
-using BashParserCore.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using System.Text;
-using Microsoft.AspNetCore.Identity;
-using Hangfire;
-using Hangfire.SqlServer;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
-namespace task_2
+namespace BashParserCore.Services
 {
-    class Program
+    interface IBashparser
     {
-        static void Main(string[] args)
+        void parseBash();
+    }
+
+    public class BashParser : IBashparser
+    {
+        public void parseBash()
         {
-          /*  GlobalConfiguration.Configuration.UseSqlServerStorage("Server=(localdb)\\mssqllocaldb;Database=aspnet-BashParserCore-e9d3955e-f22b-44ff-8635-e4effd1641be;Trusted_Connection=True;MultipleActiveResultSets=true");
-            JobStorage.Current = new SqlServerStorage("Server=(localdb)\\mssqllocaldb;Database=aspnet-BashParserCore-e9d3955e-f22b-44ff-8635-e4effd1641be;Trusted_Connection=True;MultipleActiveResultSets=true");
-            var server = new BackgroundJobServer();
-            RecurringJob.AddOrUpdate(() => Console.Write("Easy!"), Cron.Minutely);
-            Console.ReadKey();
-            server.Dispose();*/
             string datePattern = @"\w?=.?date.{2}(?<date>.+)</span>";
             string titlePattern = @"title:\s'(?<title>.+)'";
             string bodyPattern = @"class=.text.{2}(?<text>.+)</div>";

@@ -15,6 +15,7 @@ using BashParserCore.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using BashParserCore.Data.Repositories;
+using Hangfire;
 
 namespace BashParserCore
 {
@@ -60,11 +61,13 @@ namespace BashParserCore
             services.AddMvc();
 
             // Add application services.
+            services.AddHangfire(s => s.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IRepository<Post>, PostRepository>();
+            services.AddTransient<IInviteTokensCleaner, InviteTokensCleaner>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -87,7 +90,9 @@ namespace BashParserCore
             app.UseStaticFiles();
 
             app.UseIdentity();
-
+            app.UseHangfireServer();
+            app.UseHangfireDashboard();
+            RecurringJob.AddOrUpdate<IInviteTokensCleaner>(s => s.removeOutdatedTokens(), Cron.Minutely); // Deleting outdated invitations from db every 24 hours
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
             DatabaseInitialize(app.ApplicationServices);
             app.UseMvc(routes =>
@@ -121,7 +126,7 @@ namespace BashParserCore
                 userManager.AddToRolesAsync(moder, new List<string>() { "User", "Moderator" }).Wait();
             }
 
-            var admin = new ApplicationUser { UserName = "admin@gmail.com", Email = "admin@gmail.com",  EmailConfirmed = true };
+            var admin = new ApplicationUser { UserName = "admin@gmail.com", Email = "admin@gmail.com", EmailConfirmed = true };
             if (!roleManager.RoleExistsAsync("Admin").Result)
             {
                 await roleManager.CreateAsync(new IdentityRole("Admin"));
@@ -132,7 +137,7 @@ namespace BashParserCore
                 userManager.AddToRolesAsync(admin, new List<string>() { "User", "Moderator", "Admin" }).Wait();
             }
 
-            var mainAdmin = new ApplicationUser { UserName = "mainadmin@gmail.com", Email = "mainadmin@gmail.com", EmailConfirmed = true};
+            var mainAdmin = new ApplicationUser { UserName = "mainadmin@gmail.com", Email = "mainadmin@gmail.com", EmailConfirmed = true };
             if (!roleManager.RoleExistsAsync("MainAdmin").Result)
             {
                 await roleManager.CreateAsync(new IdentityRole("MainAdmin"));
