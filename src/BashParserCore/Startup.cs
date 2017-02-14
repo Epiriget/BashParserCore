@@ -92,7 +92,7 @@ namespace BashParserCore
             app.UseIdentity();
             app.UseHangfireServer();
             app.UseHangfireDashboard();
-            RecurringJob.AddOrUpdate<IInviteTokensCleaner>(s => s.removeOutdatedTokens(), Cron.Minutely); // Deleting outdated invitations from db every 24 hours
+            RecurringJob.AddOrUpdate<IInviteTokensCleaner>(s => s.removeOutdatedTokens(), Cron.Daily); // Deleting outdated invitations from db every 24 hours
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
             DatabaseInitialize(app.ApplicationServices);
             app.UseMvc(routes =>
